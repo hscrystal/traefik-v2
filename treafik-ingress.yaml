@@ -26,7 +26,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`trk.hs-network.xyz`) && PathPrefix(`/`)
+  - match: Host(`trk-staging.hs-network.xyz`) && PathPrefix(`/`)
     kind: Rule
     middlewares:
     - name: ingressauth
@@ -45,7 +45,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`trk.hs-network.xyz`) && PathPrefix(`/`)
+  - match: Host(`trk-staging.hs-network.xyz`) && PathPrefix(`/`)
     kind: Rule
     middlewares:
     - name: ingressauth

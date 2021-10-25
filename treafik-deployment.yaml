@@ -193,6 +193,10 @@ spec:
         app: traefik
     spec:
       serviceAccountName: traefik-ingress-controller
+      volumes:
+        - name: traefik-pv-storage
+          persistentVolumeClaim:
+            claimName: traefik-pv-claim
       containers:
         - name: traefik
           image: traefik:v2.3
@@ -207,7 +211,7 @@ spec:
             - --providers.kubernetescrd
             - --certificatesresolvers.myresolver.acme.tlschallenge
             - --certificatesresolvers.myresolver.acme.email=hscrystaleng@gmail.com
-            - --certificatesresolvers.myresolver.acme.storage=acme.json
+            - --certificatesresolvers.myresolver.acme.storage=config/acme.json
             - --certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
           ports:
             - name: web
@@ -218,6 +222,9 @@ spec:
               hostPort: 443
             - name: admin
               containerPort: 8080
+          volumeMounts:
+            - mountPath: "/config"
+              name: traefik-pv-storage
 
 ---
 apiVersion: v1

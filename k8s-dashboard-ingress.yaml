@@ -1,21 +1,21 @@
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: k8s-dashboard-ingress-http
-  namespace: kube-system
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  entryPoints:
-    - web
-  routes:
-  - match: Host(`k8s.hs-network.xyz`) && PathPrefix(`/`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard
-      port: 443
-
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: k8s-dashboard-ingress-http
+#  namespace: kube-system
+#  annotations:
+#    kubernetes.io/ingress.class: traefik
+#spec:
+#  entryPoints:
+#    - web
+#  routes:
+#  - match: Host(`k8s.hs-network.xyz`) && PathPrefix(`/`)
+#    kind: Rule
+#    services:
+#    - name: kubernetes-dashboard
+#      port: 443
+#
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -24,7 +24,7 @@ metadata:
   namespace: kube-system
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.insecureSkipVerify: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-https@kubernetescrd
 spec:
   entryPoints:
     - websecure
