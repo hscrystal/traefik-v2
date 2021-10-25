@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-basic-auth
+  namespace: traefik
+data:
+  auth: <auth_key_base64>
+type: Opaque
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ingressauth
+  namespace: traefik
+spec:
+  basicAuth:
+    secret: traefik-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`trk.hs-network.xyz`) && PathPrefix(`/`)
+    kind: Rule
+    middlewares:
+    - name: ingressauth
+      namespace: traefik
+    services:
+    - name: traefik
+      port: 8080
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard-ssl
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`trk.hs-network.xyz`) && PathPrefix(`/`)
+    kind: Rule
+    middlewares:
+    - name: ingressauth
+      namespace: traefik
+    services:
+    - name: traefik
+      port: 8080
+  tls:
+    certResolver: myresolver
