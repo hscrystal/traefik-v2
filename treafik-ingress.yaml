@@ -7,6 +7,7 @@ metadata:
 data:
   auth: <auth_key_base64>
 type: Opaque
+
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -16,6 +17,7 @@ metadata:
 spec:
   basicAuth:
     secret: traefik-basic-auth
+
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -30,6 +32,8 @@ spec:
     kind: Rule
     middlewares:
     - name: ingressauth
+      namespace: traefik
+    - name: traefik-redirect-https@kubernetescrd
       namespace: traefik
     services:
     - name: traefik
