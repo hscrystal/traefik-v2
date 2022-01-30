@@ -40,23 +40,26 @@ spec:
   selector:
     app: whoami
 
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: IngressRoute
-#metadata:
-#  name: whoami-ingress-http
-#  namespace: whoami
-#  annotations:
-#    kubernetes.io/ingress.class: traefik
-#spec:
-#  entryPoints:
-#    - web
-#  routes:
-#  - match: Host(`whoami.hs-network.xyz`) && PathPrefix(`/`)
-#    kind: Rule
-#    services:
-#    - name: whoami-service
-#      port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-ingress-http
+  namespace: whoami
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`whoami.hs-network.xyz`) && PathPrefix(`/`)
+    kind: Rule
+    middlewares:
+      - name: traefik-redirect-https@kubernetescrd
+        namespace: traefik
+    services:
+    - name: whoami-service
+      port: 80
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -66,7 +69,6 @@ metadata:
   namespace: whoami
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   entryPoints:
     - websecure
@@ -78,3 +80,5 @@ spec:
       port: 80
   tls:
     certResolver: myresolver
+
+    
